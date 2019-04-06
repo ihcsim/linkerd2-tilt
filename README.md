@@ -4,6 +4,12 @@ This repository contains the skaffold.yaml that can be used to develop the [Link
 [Skaffold](https://skaffold.dev/) is a command line tool that facilitates continuous development for Kubernetes applications.
 
 ## Getting Started
+Install the following software:
+
+* [Skaffold v0.26.0](https://github.com/GoogleContainerTools/skaffold)
+* [Minikube](https://github.com/kubernetes/minikube)
+* [Linkerd 2](https://linkerd.io/2/tasks/install/)
+
 Create the following symlinks from the Linkerd 2 repository to tihs repository:
 ```bash
 ln -s `pwd`/linkerd-skaffold/Makefile $GOPATH/src/github.com/linkerd/linkerd2/Makefile
