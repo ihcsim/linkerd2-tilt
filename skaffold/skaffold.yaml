@@ -1,0 +1,91 @@
+apiVersion: skaffold/v1beta7
+kind: Config
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.IMAGE_NAME}}:isim-dev"
+  artifacts:
+  - image: gcr.io/linkerd-io/controller
+    docker:
+      dockerfile: controller/Dockerfile
+      buildArgs:
+        LINKERD_VERSION: isim-dev
+deploy:
+  kubectl:
+    manifests:
+    - skaffold/deploy/controller.yaml
+
+profiles:
+- name: controller
+
+- name: proxy-injector
+  patches:
+  - op: replace
+    path: /deploy/kubectl/manifests/0
+    value: skaffold/deploy/proxy-injector.yaml
+
+- name: identity
+  patches:
+  - op: replace
+    path: /deploy/kubectl/manifests/0
+    value: skaffold/deploy/identity.yaml
+
+- name: proxy-init
+  patches:
+  - op: replace
+    path: /build/artifacts/0/image
+    value: gcr.io/linkerd-io/proxy-init
+  - op: replace
+    path: /build/artifacts/0/docker/dockerfile
+    value: proxy-init/Dockerfile
+  - op: replace
+    path: /deploy/kubectl/manifests/0
+    value: skaffold/deploy/proxy-init.yaml
+
+- name: web
+  patches:
+  - op: replace
+    path: /build/artifacts/0/image
+    value: gcr.io/linkerd-io/web
+  - op: replace
+    path: /build/artifacts/0/docker/dockerfile
+    value: web/Dockerfile
+  - op: replace
+    path: /deploy/kubectl/manifests/0
+    value: skaffold/deploy/web.yaml
+
+- name: grafana
+  patches:
+  - op: replace
+    path: /build/artifacts/0/image
+    value: gcr.io/linkerd-io/grafana
+  - op: replace
+    path: /build/artifacts/0/docker/dockerfile
+    value: grafana/Dockerfile
+  - op: replace
+    path: /deploy/kubectl/manifests/0
+    value: skaffold/deploy/grafana.yaml
+
+- name: all
+  build:
+    artifacts:
+    - image: gcr.io/linkerd-io/controller
+      docker:
+        dockerfile: controller/Dockerfile
+        buildArgs:
+          LINKERD_VERSION: isim-dev
+    - image: gcr.io/linkerd-io/web
+      docker:
+        dockerfile: web/Dockerfile
+        buildArgs:
+          LINKERD_VERSION: isim-dev
+    - image: gcr.io/linkerd-io/grafana
+      docker:
+        dockerfile: grafana/Dockerfile
+    - image: gcr.io/linkerd-io/proxy-init
+      docker:
+        dockerfile: proxy-init/Dockerfile
+  deploy:
+    kubectl:
+      manifests:
+      - skaffold/deploy/all.yaml
