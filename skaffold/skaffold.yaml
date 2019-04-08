@@ -10,13 +10,19 @@ build:
       dockerfile: controller/Dockerfile
       buildArgs:
         LINKERD_VERSION: isim-dev
+  local:
+    push: false
 deploy:
   kubectl:
     manifests:
-    - skaffold/deploy/controller.yaml
+    -
 
 profiles:
 - name: controller
+  patches:
+  - op: replace
+    path: /deploy/kubectl/manifests/0
+    value: skaffold/deploy/controller.yaml
 
 - name: proxy-injector
   patches:
