@@ -15,26 +15,22 @@ build:
 deploy:
   kubectl:
     manifests:
-    -
+    - k8s/controller.yaml
 
 profiles:
 - name: controller
-  patches:
-  - op: replace
-    path: /deploy/kubectl/manifests/0
-    value: skaffold/deploy/controller.yaml
 
 - name: proxy-injector
   patches:
   - op: replace
     path: /deploy/kubectl/manifests/0
-    value: skaffold/deploy/proxy-injector.yaml
+    value: k8s/proxy-injector.yaml
 
 - name: identity
   patches:
   - op: replace
     path: /deploy/kubectl/manifests/0
-    value: skaffold/deploy/identity.yaml
+    value: k8s/identity.yaml
 
 - name: proxy-init
   patches:
@@ -46,7 +42,7 @@ profiles:
     value: proxy-init/Dockerfile
   - op: replace
     path: /deploy/kubectl/manifests/0
-    value: skaffold/deploy/proxy-init.yaml
+    value: k8s/proxy-init.yaml
 
 - name: web
   patches:
@@ -58,7 +54,7 @@ profiles:
     value: web/Dockerfile
   - op: replace
     path: /deploy/kubectl/manifests/0
-    value: skaffold/deploy/web.yaml
+    value: k8s/web.yaml
 
 - name: grafana
   patches:
@@ -70,7 +66,7 @@ profiles:
     value: grafana/Dockerfile
   - op: replace
     path: /deploy/kubectl/manifests/0
-    value: skaffold/deploy/grafana.yaml
+    value: k8s/grafana.yaml
 
 - name: all
   build:
@@ -94,4 +90,4 @@ profiles:
   deploy:
     kubectl:
       manifests:
-      - skaffold/deploy/all.yaml
+      - k8s/all.yaml
