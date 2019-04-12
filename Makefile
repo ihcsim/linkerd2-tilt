@@ -1,9 +1,9 @@
 LINKERD_NAMESPACE ?= linkerd
 LINKERD_VERSION ?= edge-19.4.1
-SKAFFOLD_YAML ?= skaffold/skaffold.yaml
+SKAFFOLD_YAML ?= skaffold.yaml
 SKAFFOLD_WATCH_POLL_INTERVAL ?= 5000
 SKAFFOLD_PROFILE ?= proxy-injector
-MANIFEST_FOLDER = skaffold/deploy
+MANIFEST_FOLDER = k8s
 
 .PHONY: linkerd
 linkerd:
@@ -31,15 +31,15 @@ sync-all:
 no-push:
 	skaffold config set --global local-cluster true
 
-skaffold-build: no-push
+skaffold-build:
 	@eval $$(minikube docker-env) ; \
 	skaffold build --filename ${SKAFFOLD_YAML} --profile all
 
-skaffold-deploy: no-push
+skaffold-deploy:
 	@eval $$(minikube docker-env) ; \
 	skaffold deploy --filename ${SKAFFOLD_YAML} --profile all
 
-skaffold-dev: no-push
+skaffold-dev:
 	@eval $$(minikube docker-env) ; \
 	skaffold dev --filename ${SKAFFOLD_YAML} --profile ${SKAFFOLD_PROFILE} --watch-poll-interval ${SKAFFOLD_WATCH_POLL_INTERVAL}
 
