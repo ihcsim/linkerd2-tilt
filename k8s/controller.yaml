@@ -2,23 +2,13 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "3"
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"extensions/v1beta1","kind":"Deployment","metadata":{"annotations":{"linkerd.io/created-by":"linkerd/cli edge-19.4.1"},"creationTimestamp":null,"labels":{"linkerd.io/control-plane-component":"controller"},"name":"linkerd-controller","namespace":"linkerd"},"spec":{"replicas":1,"strategy":{},"template":{"metadata":{"annotations":{"linkerd.io/created-by":"linkerd/cli edge-19.4.1","linkerd.io/identity-mode":"default","linkerd.io/proxy-version":"edge-19.4.1"},"creationTimestamp":null,"labels":{"linkerd.io/control-plane-component":"controller","linkerd.io/control-plane-ns":"linkerd","linkerd.io/proxy-deployment":"linkerd-controller"}},"spec":{"containers":[{"args":["public-api","-prometheus-url=http://linkerd-prometheus.linkerd.svc.cluster.local:9090","-controller-namespace=linkerd","-log-level=info"],"image":"gcr.io/linkerd-io/controller","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/ping","port":9995},"initialDelaySeconds":10},"name":"public-api","ports":[{"containerPort":8085,"name":"http"},{"containerPort":9995,"name":"admin-http"}],"readinessProbe":{"failureThreshold":7,"httpGet":{"path":"/ready","port":9995}},"resources":{},"securityContext":{"runAsUser":2103},"volumeMounts":[{"mountPath":"/var/run/linkerd/config","name":"config"}]},{"args":["destination","-addr=:8086","-controller-namespace=linkerd","-enable-h2-upgrade=true","-log-level=info"],"image":"gcr.io/linkerd-io/controller","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/ping","port":9996},"initialDelaySeconds":10},"name":"destination","ports":[{"containerPort":8086,"name":"grpc"},{"containerPort":9996,"name":"admin-http"}],"readinessProbe":{"failureThreshold":7,"httpGet":{"path":"/ready","port":9996}},"resources":{},"securityContext":{"runAsUser":2103},"volumeMounts":[{"mountPath":"/var/run/linkerd/config","name":"config"}]},{"args":["tap","-controller-namespace=linkerd","-log-level=info"],"image":"gcr.io/linkerd-io/controller","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/ping","port":9998},"initialDelaySeconds":10},"name":"tap","ports":[{"containerPort":8088,"name":"grpc"},{"containerPort":9998,"name":"admin-http"}],"readinessProbe":{"failureThreshold":7,"httpGet":{"path":"/ready","port":9998}},"resources":{},"securityContext":{"runAsUser":2103}},{"env":[{"name":"LINKERD2_PROXY_LOG","value":"warn,linkerd2_proxy=info"},{"name":"LINKERD2_PROXY_DESTINATION_SVC_ADDR","value":"localhost.:8086"},{"name":"LINKERD2_PROXY_CONTROL_LISTEN_ADDR","value":"0.0.0.0:4190"},{"name":"LINKERD2_PROXY_ADMIN_LISTEN_ADDR","value":"0.0.0.0:4191"},{"name":"LINKERD2_PROXY_OUTBOUND_LISTEN_ADDR","value":"127.0.0.1:4140"},{"name":"LINKERD2_PROXY_INBOUND_LISTEN_ADDR","value":"0.0.0.0:4143"},{"name":"LINKERD2_PROXY_DESTINATION_PROFILE_SUFFIXES","value":"svc.cluster.local."},{"name":"LINKERD2_PROXY_INBOUND_ACCEPT_KEEPALIVE","value":"10000ms"},{"name":"LINKERD2_PROXY_OUTBOUND_CONNECT_KEEPALIVE","value":"10000ms"},{"name":"_pod_ns","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"LINKERD2_PROXY_DESTINATION_CONTEXT","value":"ns:$(_pod_ns)"},{"name":"LINKERD2_PROXY_IDENTITY_DIR","value":"/var/run/linkerd/identity/end-entity"},{"name":"LINKERD2_PROXY_IDENTITY_TRUST_ANCHORS","value":"-----BEGIN CERTIFICATE-----\nMIIBgjCCASmgAwIBAgIBATAKBggqhkjOPQQDAjApMScwJQYDVQQDEx5pZGVudGl0\neS5saW5rZXJkLmNsdXN0ZXIubG9jYWwwHhcNMTkwNDA2MDU1MDAxWhcNMjAwNDA1\nMDU1MDIxWjApMScwJQYDVQQDEx5pZGVudGl0eS5saW5rZXJkLmNsdXN0ZXIubG9j\nYWwwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATS4AkSc+wNoYnheHQLP1yHTjYu\nq80qJ4e+kyPyBzk2Ejr18lAcQ/iKpN5C/xu+35FU6dB2c8JYvyfAFOyjP9efo0Iw\nQDAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMC\nMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwIDRwAwRAIgfnYmTu0zhGSqp+hi\nYcC6/ZR2yqLP4Trf/jQaEXKcUuICIGFBKn+/PF5dC9ChTaEPGC+6wQQ75Pb4h8ct\nV16e3wLY\n-----END CERTIFICATE-----\n"},{"name":"LINKERD2_PROXY_IDENTITY_TOKEN_FILE","value":"/var/run/secrets/kubernetes.io/serviceaccount/token"},{"name":"LINKERD2_PROXY_IDENTITY_SVC_ADDR","value":"linkerd-identity.linkerd.svc.cluster.local:8080"},{"name":"_pod_sa","valueFrom":{"fieldRef":{"fieldPath":"spec.serviceAccountName"}}},{"name":"_l5d_ns","value":"linkerd"},{"name":"_l5d_trustdomain","value":"cluster.local"},{"name":"LINKERD2_PROXY_IDENTITY_LOCAL_NAME","value":"$(_pod_sa).$(_pod_ns).serviceaccount.identity.$(_l5d_ns).$(_l5d_trustdomain)"},{"name":"LINKERD2_PROXY_IDENTITY_SVC_NAME","value":"linkerd-identity.$(_l5d_ns).serviceaccount.identity.$(_l5d_ns).$(_l5d_trustdomain)"},{"name":"LINKERD2_PROXY_DESTINATION_SVC_NAME","value":"linkerd-controller.$(_l5d_ns).serviceaccount.identity.$(_l5d_ns).$(_l5d_trustdomain)"}],"image":"gcr.io/linkerd-io/proxy:edge-19.4.1","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/metrics","port":4191},"initialDelaySeconds":10},"name":"linkerd-proxy","ports":[{"containerPort":4143,"name":"linkerd-proxy"},{"containerPort":4191,"name":"linkerd-admin"}],"readinessProbe":{"httpGet":{"path":"/ready","port":4191},"initialDelaySeconds":2},"resources":{},"securityContext":{"runAsUser":2102},"terminationMessagePolicy":"FallbackToLogsOnError","volumeMounts":[{"mountPath":"/var/run/linkerd/identity/end-entity","name":"linkerd-identity-end-entity"}]}],"initContainers":[{"args":["--incoming-proxy-port","4143","--outgoing-proxy-port","4140","--proxy-uid","2102","--inbound-ports-to-ignore","4190,4191","--outbound-ports-to-ignore","443"],"image":"gcr.io/linkerd-io/proxy-init:edge-19.4.1","imagePullPolicy":"IfNotPresent","name":"linkerd-init","resources":{},"securityContext":{"capabilities":{"add":["NET_ADMIN"]},"privileged":false,"runAsNonRoot":false,"runAsUser":0},"terminationMessagePolicy":"FallbackToLogsOnError"}],"serviceAccountName":"linkerd-controller","volumes":[{"configMap":{"name":"linkerd-config"},"name":"config"},{"emptyDir":{"medium":"Memory"},"name":"linkerd-identity-end-entity"}]}}},"status":{}}
-    linkerd.io/created-by: linkerd/cli edge-19.4.1
-  creationTimestamp: "2019-04-06T04:03:48Z"
-  generation: 3
+    linkerd.io/created-by: linkerd/cli stable-2.3.0
   labels:
     linkerd.io/control-plane-component: controller
   name: linkerd-controller
   namespace: linkerd
-  resourceVersion: "9366"
-  selfLink: /apis/extensions/v1beta1/namespaces/linkerd/deployments/linkerd-controller
-  uid: fb11d3f8-5820-11e9-b627-a8e9e4c877e9
 spec:
-  progressDeadlineSeconds: 2147483647
   replicas: 1
-  revisionHistoryLimit: 2147483647
   selector:
     matchLabels:
       linkerd.io/control-plane-component: controller
@@ -32,10 +22,9 @@ spec:
   template:
     metadata:
       annotations:
-        linkerd.io/created-by: linkerd/cli edge-19.4.1
+        linkerd.io/created-by: linkerd/cli stable-2.3.0
         linkerd.io/identity-mode: default
-        linkerd.io/proxy-version: edge-19.4.1
-      creationTimestamp: null
+        linkerd.io/proxy-version: stable-2.3.0
       labels:
         linkerd.io/control-plane-component: controller
         linkerd.io/control-plane-ns: linkerd
@@ -47,7 +36,7 @@ spec:
         - -prometheus-url=http://linkerd-prometheus.linkerd.svc.cluster.local:9090
         - -controller-namespace=linkerd
         - -log-level=info
-        image: gcr.io/linkerd-io/controller
+        image: gcr.io/linkerd-io/controller:stable-2.3.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -91,7 +80,7 @@ spec:
         - -controller-namespace=linkerd
         - -enable-h2-upgrade=true
         - -log-level=info
-        image: gcr.io/linkerd-io/controller
+        image: gcr.io/linkerd-io/controller:stable-2.3.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -133,7 +122,7 @@ spec:
         - tap
         - -controller-namespace=linkerd
         - -log-level=info
-        image: gcr.io/linkerd-io/controller
+        image: gcr.io/linkerd-io/controller:stable-2.3.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -200,14 +189,14 @@ spec:
           value: |
             -----BEGIN CERTIFICATE-----
             MIIBgjCCASmgAwIBAgIBATAKBggqhkjOPQQDAjApMScwJQYDVQQDEx5pZGVudGl0
-            eS5saW5rZXJkLmNsdXN0ZXIubG9jYWwwHhcNMTkwNDA2MDU1MDAxWhcNMjAwNDA1
-            MDU1MDIxWjApMScwJQYDVQQDEx5pZGVudGl0eS5saW5rZXJkLmNsdXN0ZXIubG9j
-            YWwwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATS4AkSc+wNoYnheHQLP1yHTjYu
-            q80qJ4e+kyPyBzk2Ejr18lAcQ/iKpN5C/xu+35FU6dB2c8JYvyfAFOyjP9efo0Iw
+            eS5saW5rZXJkLmNsdXN0ZXIubG9jYWwwHhcNMTkwNDIwMjAyODEzWhcNMjAwNDE5
+            MjAyODMzWjApMScwJQYDVQQDEx5pZGVudGl0eS5saW5rZXJkLmNsdXN0ZXIubG9j
+            YWwwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATY/heg2gmbhjQQn43v/2JfgE5n
+            eyoKFSYRz9XzO/HfTMJXG5ClRP1ylcGyPlnvwxHXFox1Lv2KYl1rTHDM3b71o0Iw
             QDAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMC
-            MA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwIDRwAwRAIgfnYmTu0zhGSqp+hi
-            YcC6/ZR2yqLP4Trf/jQaEXKcUuICIGFBKn+/PF5dC9ChTaEPGC+6wQQ75Pb4h8ct
-            V16e3wLY
+            MA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwIDRwAwRAIgQfiraNKXWyCNZa/k
+            QwJcvcqSDGu3GfMqHMbJibsScPECIEEAIJJ0lD7VhRP11e+bHoIKo1utUBHxCGFF
+            pparuUV1
             -----END CERTIFICATE-----
         - name: LINKERD2_PROXY_IDENTITY_TOKEN_FILE
           value: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -228,7 +217,7 @@ spec:
           value: linkerd-identity.$(_l5d_ns).serviceaccount.identity.$(_l5d_ns).$(_l5d_trustdomain)
         - name: LINKERD2_PROXY_DESTINATION_SVC_NAME
           value: linkerd-controller.$(_l5d_ns).serviceaccount.identity.$(_l5d_ns).$(_l5d_trustdomain)
-        image: gcr.io/linkerd-io/proxy:edge-19.4.1
+        image: gcr.io/linkerd-io/proxy:stable-2.3.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -280,7 +269,7 @@ spec:
         - 4190,4191
         - --outbound-ports-to-ignore
         - "443"
-        image: gcr.io/linkerd-io/proxy-init:edge-19.4.1
+        image: gcr.io/linkerd-io/proxy-init:stable-2.3.0
         imagePullPolicy: IfNotPresent
         name: linkerd-init
         resources: {}
@@ -308,16 +297,3 @@ spec:
       - emptyDir:
           medium: Memory
         name: linkerd-identity-end-entity
-status:
-  availableReplicas: 1
-  conditions:
-  - lastTransitionTime: "2019-04-06T04:03:48Z"
-    lastUpdateTime: "2019-04-06T04:03:48Z"
-    message: Deployment has minimum availability.
-    reason: MinimumReplicasAvailable
-    status: "True"
-    type: Available
-  observedGeneration: 3
-  readyReplicas: 1
-  replicas: 1
-  updatedReplicas: 1
