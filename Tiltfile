@@ -15,7 +15,7 @@ def resource_name(id):
 
 # (re-)install control plane, and watch all the deployments
 def linkerd_yaml():
-  return local("{} install --identity-issuer-certificate-file {} --identity-issuer-key-file {} --identity-trust-anchors-file {} --identity-trust-domain {}".format(linkerd_path, identity_issuer_certificate_file, identity_issuer_key_file, identity_trust_anchors_file, identity_trust_domain))
+  return local("{} install --ignore-cluster --identity-issuer-certificate-file {} --identity-issuer-key-file {} --identity-trust-anchors-file {} --identity-trust-domain {}".format(linkerd_path, identity_issuer_certificate_file, identity_issuer_key_file, identity_trust_anchors_file, identity_trust_domain))
 
 linkerd_path = path("/bin/linkerd")
 image_tag = "isim-dev"
