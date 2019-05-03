@@ -17,7 +17,6 @@ ISSUER_CSR_FILE=tls/identity.linkerd.cluster.local.csr
 
 echo ${REGENERATE_TLS_ASSETS}
 if [ ! -z "${REGENERATE_TLS_ASSETS}" ]; then
-  echo "Test"
   rm -rf ${CA_KEY_FILE} ${CA_CERT_FILE} ${CA_SRL_FILE} ${ISSUER_KEY_FILE} ${ISSUER_PUB_KEY_FILE} ${ISSUER_CSR_FILE} ${ISSUER_CERT_FILE}
 fi
 
@@ -45,4 +44,3 @@ openssl x509 -req \
   -extensions v3_req \
   -extfile ${OPENSSL_CONFIG_FILE} \
   -out ${ISSUER_CERT_FILE}
-
