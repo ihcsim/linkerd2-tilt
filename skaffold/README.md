@@ -1,11 +1,11 @@
 # Skaffold
 
-The `skaffold.yaml` file is tested with Skaffold v0.26.0.
+The `skaffold.yaml` file is tested with Skaffold v0.26.0. Unlike with Tilt, there isn't a way to only rebuild code that is changes. The closest I get is to rely on Skaffold profiles to perform selective deployments.
 
 To get started, create the following symlinks from the Linkerd2 repository to this repository:
 ```bash
-ln -s `pwd`/linkerd-skaffold/Makefile $GOPATH/src/github.com/linkerd/linkerd2/Makefile
-ln -s `pwd`/linkerd-skaffold/skaffold $GOPATH/src/github.com/linkerd/linkerd2/skaffold
+ln -s `pwd`/linkerd-tilt/Makefile $GOPATH/src/github.com/linkerd/linkerd2/Makefile
+ln -s `pwd`/linkerd-tilt/skaffold $GOPATH/src/github.com/linkerd/linkerd2/skaffold
 ```
 
 The Makefile provides targets to install the control plane, synchronized the k8s YAML files and run Skaffold:
