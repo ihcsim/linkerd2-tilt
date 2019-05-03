@@ -15,13 +15,13 @@ def resource_name(id):
 
 # (re-)install control plane, and watch all the deployments
 def linkerd_yaml():
-  return local("{} install --ignore-cluster --identity-issuer-certificate-file {} --identity-issuer-key-file {} --identity-trust-anchors-file {} --identity-trust-domain {}".format(linkerd_path, identity_issuer_certificate_file, identity_issuer_key_file, identity_trust_anchors_file, identity_trust_domain))
+  return local(path("init.sh"))
 
-linkerd_path = path("/bin/linkerd")
+linkerd_path = path("bin/linkerd")
 image_tag = "isim-dev"
-identity_issuer_certificate_file = path("tilt-tls/crt.pem")
-identity_issuer_key_file = path("tilt-tls/key.pem")
-identity_trust_anchors_file = path("tilt-tls/trust-anchor.pem")
+identity_issuer_certificate_file = path("tls/identity.linkerd.cluster.local.crt")
+identity_issuer_key_file = path("tls/identity.linkerd.cluster.local.key")
+identity_trust_anchors_file = path("tls/ca.crt")
 identity_trust_domain = "cluster.local"
 
 k8s_yaml(linkerd_yaml())
@@ -29,11 +29,40 @@ k8s_yaml(linkerd_yaml())
 # rename each component by stripping away the 'linkerd-' prefix
 workload_to_resource_function(resource_name)
 
-k8s_resource("controller", port_forwards=["8085","9995","8086","9996","8088","9998"])
-k8s_resource("proxy-injector", port_forwards=["8443"])
-k8s_resource("identity", port_forwards=["8080","9990"])
-k8s_resource("web", port_forwards=["8084","9994"])
-k8s_resource("grafana", port_forwards=["3000"])
+k8s_resource("controller",
+  port_forwards=["8085","9995","8086","9996","8088","9998"],
+  extra_pod_selectors=[{"linkerd.io/control-plane-component": "controller"}],
+)
+
+k8s_resource("proxy-injector",
+  port_forwards=["8443"],
+  extra_pod_selectors=[{"linkerd.io/control-plane-component": "proxy-injector"}],
+)
+
+k8s_resource("identity",
+  port_forwards=["8080","9990"],
+  extra_pod_selectors=[{"linkerd.io/control-plane-component": "identity"}],
+)
+
+k8s_resource("web",
+  port_forwards=["8084","9994"],
+  extra_pod_selectors=[{"linkerd.io/control-plane-component": "web"}],
+)
+
+k8s_resource("sp-validator",
+  port_forwards=["8443"],
+  extra_pod_selectors=[{"linkerd.io/control-plane-component": "sp-validator"}],
+)
+
+k8s_resource("grafana",
+  port_forwards=["3000"],
+  extra_pod_selectors=[{"linkerd.io/control-plane-component": "grafana"}],
+)
+
+k8s_resource("prometheus",
+  port_forwards=["9090"],
+  extra_pod_selectors=[{"linkerd.io/control-plane-component": "prometheus"}],
+)
 
 custom_build(
   "gcr.io/linkerd-io/controller",
