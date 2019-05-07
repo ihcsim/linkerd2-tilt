@@ -2,7 +2,7 @@
 
 set -e
 
-OPENSSL_CONFIG_FILE=tls/openssl.cnf
+OPENSSL_CONFIG_FILE=sh/openssl.cnf
 
 CA_CERT_FILE=${CA_CERT_FILE:-tls/ca.crt}
 ISSUER_KEY_FILE=${ISSUER_KEY_FILE:-tls/identity.linkerd.cluster.local.key}
@@ -15,10 +15,7 @@ CERT_VALIDITY_DAYS=30
 ISSUER_PUB_KEY_FILE=tls/identity.linkerd.cluster.local.key.pub
 ISSUER_CSR_FILE=tls/identity.linkerd.cluster.local.csr
 
-echo ${REGENERATE_TLS_ASSETS}
-if [ ! -z "${REGENERATE_TLS_ASSETS}" ]; then
-  rm -rf ${CA_KEY_FILE} ${CA_CERT_FILE} ${CA_SRL_FILE} ${ISSUER_KEY_FILE} ${ISSUER_PUB_KEY_FILE} ${ISSUER_CSR_FILE} ${ISSUER_CERT_FILE}
-fi
+rm -rf ${CA_KEY_FILE} ${CA_CERT_FILE} ${CA_SRL_FILE} ${ISSUER_KEY_FILE} ${ISSUER_PUB_KEY_FILE} ${ISSUER_CSR_FILE} ${ISSUER_CERT_FILE}
 
 openssl req -new -newkey ec:<(openssl ecparam -name prime256v1) \
   -nodes -x509 \

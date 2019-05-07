@@ -17,15 +17,11 @@ def resource_name(id):
 
 # (re-)install control plane, and watch all the deployments
 def linkerd_yaml():
-  watch_file(path("init.sh"))
-  return local(path("init.sh"))
+  watch_file(path("sh/init.sh"))
+  return local(path("sh/init.sh"))
 
 linkerd_path = path("bin/linkerd")
 image_tag = "isim-dev"
-identity_issuer_certificate_file = path("tls/identity.linkerd.cluster.local.crt")
-identity_issuer_key_file = path("tls/identity.linkerd.cluster.local.key")
-identity_trust_anchors_file = path("tls/ca.crt")
-identity_trust_domain = "cluster.local"
 
 default_registry(gcr_registry)
 k8s_yaml(linkerd_yaml())

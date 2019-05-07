@@ -1,15 +1,18 @@
 #!/bin/bash
 
-PROJECT_HOME=$GOPATH/src/github.com/linkerd/linkerd2
-LINKERD_BIN=linkerd
+PROJECT_HOME=${GOPATH}/src/github.com/linkerd/linkerd2
+LINKERD_BIN=${PROJECT_HOME}/bin/linkerd
 
 CLUSTER_DOMAIN=${CLUSTER_DOMAIN:-cluster.local}
+NEW_TLS_ASSETS=${NEW_TLS_ASSETS:-"false"}
+
 CA_CERT_FILE=tls/ca.crt
 ISSUER_CERT_FILE=tls/identity.linkerd.cluster.local.crt
 ISSUER_KEY_FILE=tls/identity.linkerd.cluster.local.key
-REGENERATE_TLS_ASSETS="true"
 
-source ${PROJECT_HOME}/tls/gen-tls.sh > /dev/null 2>&1
+if [ "${NEW_TLS_ASSETS}" = "true" ]; then
+  source ${PROJECT_HOME}/sh/gen-tls.sh > /dev/null 2>&1
+fi
 
 ${LINKERD_BIN} install --ignore-cluster \
   --identity-issuer-certificate-file ${ISSUER_CERT_FILE} \
