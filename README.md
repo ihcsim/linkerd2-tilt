@@ -2,7 +2,7 @@
 This repository contains the Tiltfile to run [Tilt](https://tilt.dev/) with the [Linkerd 2](https://linkerd.io/) control plane.
 
 ## Objectives
-The goal of this project is to find a tool that improves the efficiency of local development of the Linkerd2 control plane.
+The goal of this project is to find a tool that improves the efficiency of the development of the Linkerd2 control plane.
 
 Specifically, the tool will enable:
 * Easy development experience with fast feedback loop
@@ -28,7 +28,7 @@ The project uses the following software:
 Create the following symlinks from the Linkerd2 repository to this repository:
 ```bash
 ln -s `pwd`/linkerd-tilt/Tiltfile $GOPATH/src/github.com/linkerd/linkerd2/Tiltfile
-ln -s `pwd`/linkerd-tilt/init.sh $GOPATH/src/github.com/linkerd/linkerd2/init.sh
+ln -s `pwd`/linkerd-tilt/sh $GOPATH/src/github.com/linkerd/linkerd2/sh
 ln -s `pwd`/linkerd-tilt/tls $GOPATH/src/github.com/linkerd/linkerd2/tls
 ```
 

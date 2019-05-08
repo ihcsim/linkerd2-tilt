@@ -86,10 +86,10 @@ custom_build(
   [path("web"), path("Tiltfile")],
   tag=image_tag,
   disable_push=disable_push,
-  live_update=[
-    sync(path('web/app'), '/go/src/github.com/linkerd/linkerd2/web/app'),
-    run('/go/src/github.com/linkerd/linkerd2/bin/web build'),
-  ]
+  #live_update=[
+    #sync(path('web/app'), '/go/src/github.com/linkerd/linkerd2/web/app'),
+    #run('/go/src/github.com/linkerd/linkerd2/bin/web build'),
+  #]
 )
 
 custom_build(
