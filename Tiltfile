@@ -4,6 +4,8 @@ k8s_resource_assembly_version(2)
 
 project_home = "/home/isim/workspace/go/src/github.com/linkerd/linkerd2"
 gcr_registry = "gcr.io/isim-default"
+image_tag = "isim-dev"
+proxy_version = "5018026"
 disable_push = False
 
 # prepends the provided file name with the project root path
@@ -21,7 +23,6 @@ def linkerd_yaml():
   return local(path("sh/init.sh"))
 
 linkerd_path = path("bin/linkerd")
-image_tag = "isim-dev"
 
 default_registry(gcr_registry)
 k8s_yaml(linkerd_yaml())
@@ -96,6 +97,14 @@ custom_build(
   "gcr.io/linkerd-io/grafana",
   "docker build -t $EXPECTED_REF -f {} {}". format(path("grafana/Dockerfile"), project_home),
   [path("grafana"), path("Tiltfile")],
+  tag=image_tag,
+  disable_push=disable_push,
+)
+
+custom_build(
+  "gcr.io/linkerd-io/proxy",
+  "docker build -t $EXPECTED_REF --build-arg PROXY_VERSION={} -f {} {}". format(proxy_version, path("Dockerfile-proxy"), project_home),
+  [path("proxy-identity")],
   tag=image_tag,
   disable_push=disable_push,
 )
