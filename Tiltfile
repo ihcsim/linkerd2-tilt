@@ -99,6 +99,11 @@ custom_build(
   [path("grafana"), path("Tiltfile")],
   tag=image_tag,
   disable_push=disable_push,
+  live_update=[
+    sync(path('grafana/dashboards'), '/var/lib/grafana/dashboards'),
+    sync(path('grafana/dashboards/top-line.json'), '/usr/share/grafana/public/dashboards/home.json'),
+    restart_container(),
+  ]
 )
 
 custom_build(
