@@ -86,11 +86,7 @@ custom_build(
   "docker build -t $EXPECTED_REF --build-arg LINKERD_VERSION={} -f {} {}". format(image_tag, path("web/Dockerfile"), project_home),
   [path("web"), path("Tiltfile")],
   tag=image_tag,
-  disable_push=disable_push,
-  #live_update=[
-    #sync(path('web/app'), '/go/src/github.com/linkerd/linkerd2/web/app'),
-    #run('/go/src/github.com/linkerd/linkerd2/bin/web build'),
-  #]
+  disable_push=disable_push
 )
 
 custom_build(
