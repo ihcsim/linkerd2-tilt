@@ -11,7 +11,8 @@ ISSUER_CERT_FILE=tls/identity.linkerd.cluster.local.crt
 ISSUER_KEY_FILE=tls/identity.linkerd.cluster.local.key
 
 if [ "${NEW_TLS_ASSETS}" = "true" ]; then
-  source ${PROJECT_HOME}/sh/gen-tls.sh > /dev/null 2>&1
+  source ${PROJECT_HOME}/sh/gen-tls.sh
+  exit $?
 fi
 
 ${LINKERD_BIN} install --ignore-cluster \

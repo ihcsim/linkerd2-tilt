@@ -4,18 +4,20 @@ set -e
 
 OPENSSL_CONFIG_FILE=sh/openssl.cnf
 
-CA_CERT_FILE=${CA_CERT_FILE:-tls/ca.crt}
-ISSUER_KEY_FILE=${ISSUER_KEY_FILE:-tls/identity.linkerd.cluster.local.key}
-ISSUER_CERT_FILE=${ISSUE_CERT_FILE:-tls/identity.linkerd.cluster.local.crt}
+TLS_FOLDER=${TLS_FOLDER:-tls}
+CA_CERT_FILE=${CA_CERT_FILE:-$TLS_FOLDER/ca.crt}
+ISSUER_KEY_FILE=${ISSUER_KEY_FILE:-$TLS_FOLDER/identity.linkerd.cluster.local.key}
+ISSUER_CERT_FILE=${ISSUE_CERT_FILE:-$TLS_FOLDER/identity.linkerd.cluster.local.crt}
 
 CA_KEY_FILE=tls/ca.key
 CA_SRL_FILE=tls/ca.srl
 CERT_VALIDITY_DAYS=30
 
-ISSUER_PUB_KEY_FILE=tls/identity.linkerd.cluster.local.key.pub
-ISSUER_CSR_FILE=tls/identity.linkerd.cluster.local.csr
+ISSUER_PUB_KEY_FILE=$TLS_FOLDER/identity.linkerd.cluster.local.key.pub
+ISSUER_CSR_FILE=$TLS_FOLDER/identity.linkerd.cluster.local.csr
 
-rm -rf ${CA_KEY_FILE} ${CA_CERT_FILE} ${CA_SRL_FILE} ${ISSUER_KEY_FILE} ${ISSUER_PUB_KEY_FILE} ${ISSUER_CSR_FILE} ${ISSUER_CERT_FILE}
+rm -rf ${TLS_FOLDER}
+mkdir -p ${TLS_FOLDER}
 
 openssl req -new -newkey ec:<(openssl ecparam -name prime256v1) \
   -nodes -x509 \
