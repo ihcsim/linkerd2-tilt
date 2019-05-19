@@ -67,7 +67,7 @@ k8s_resource("prometheus",
 
 custom_build(
   "gcr.io/linkerd-io/controller",
-  "docker build -t $EXPECTED_REF --build-arg LINKERD_VERSION={} -f {} {}". format(image_tag, path("controller/Dockerfile"), project_home),
+  "docker build -t $EXPECTED_REF --build-arg LINKERD_VERSION={} -f {} {}".format(image_tag, path("controller/Dockerfile"), project_home),
   [path("controller"), path("pkg"), path("Tiltfile")],
   tag=image_tag,
   disable_push=disable_push,
@@ -75,7 +75,7 @@ custom_build(
 
 custom_build(
   "gcr.io/linkerd-io/proxy-init",
-  "docker build -t $EXPECTED_REF -f {} {}". format(path("proxy-init/Dockerfile"), project_home),
+  "docker build -t $EXPECTED_REF -f {} {}".format(path("proxy-init/Dockerfile"), project_home),
   [path("proxy-init"), path("Tiltfile")],
   tag=image_tag,
   disable_push=disable_push,
@@ -83,7 +83,7 @@ custom_build(
 
 custom_build(
   "gcr.io/linkerd-io/web",
-  "docker build -t $EXPECTED_REF --build-arg LINKERD_VERSION={} -f {} {}". format(image_tag, path("web/Dockerfile"), project_home),
+  "docker build -t $EXPECTED_REF --build-arg LINKERD_VERSION={} -f {} {}".format(image_tag, path("web/Dockerfile"), project_home),
   [path("web"), path("Tiltfile")],
   tag=image_tag,
   disable_push=disable_push
@@ -91,7 +91,7 @@ custom_build(
 
 custom_build(
   "gcr.io/linkerd-io/grafana",
-  "docker build -t $EXPECTED_REF -f {} {}". format(path("grafana/Dockerfile"), project_home),
+  "docker build -t $EXPECTED_REF -f {} {}".format(path("grafana/Dockerfile"), project_home),
   [path("grafana"), path("Tiltfile")],
   tag=image_tag,
   disable_push=disable_push,
@@ -104,7 +104,7 @@ custom_build(
 
 custom_build(
   "gcr.io/linkerd-io/proxy",
-  "docker build -t $EXPECTED_REF --build-arg PROXY_VERSION={} -f {} {}". format(proxy_version, path("Dockerfile-proxy"), project_home),
+  "docker build -t $EXPECTED_REF --build-arg PROXY_VERSION={} -f {} {}".format(proxy_version, path("Dockerfile-proxy"), project_home),
   [path("proxy-identity")],
   tag=image_tag,
   disable_push=disable_push,
