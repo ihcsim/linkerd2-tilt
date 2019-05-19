@@ -1,7 +1,5 @@
 # -*- mode: Python -*-
 
-k8s_resource_assembly_version(2)
-
 project_home = "/home/isim/workspace/go/src/github.com/linkerd/linkerd2"
 gcr_registry = "gcr.io/isim-default"
 proxy_version = "5018026"
