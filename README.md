@@ -23,6 +23,8 @@ The project uses the following software:
 * [Minikube](https://github.com/kubernetes/minikube)
 * [Linkerd 2](https://linkerd.io/2/tasks/install/)
 
+If image push is required, modify the `default_registry` and `disable_push` options in the `tilt_option.json` file.
+
 ### Tilt
 
 Create the following symlinks from the Linkerd2 repository to this repository:
@@ -31,6 +33,7 @@ ln -s `pwd`/linkerd-tilt/Tiltfile $GOPATH/src/github.com/linkerd/linkerd2/Tiltfi
 ln -s `pwd`/linkerd-tilt/sh $GOPATH/src/github.com/linkerd/linkerd2/sh
 ln -s `pwd`/linkerd-tilt/tls $GOPATH/src/github.com/linkerd/linkerd2/tls
 ln -s `pwd`/linkerd-tilt/.tiltignore $GOPATH/src/github.com/linkerd/linkerd2/.tiltignore
+ln -s `pwd`/linkerd-tilt/tilt_option.json $GOPATH/src/github.com/linkerd/linkerd2/tilt_option.json
 ```
 
 To get started, generate the mTLS assets with

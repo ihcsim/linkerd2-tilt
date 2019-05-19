@@ -1,12 +1,10 @@
 # -*- mode: Python -*-
 
-project_home = "/home/isim/workspace/go/src/github.com/linkerd/linkerd2"
-gcr_registry = "gcr.io/isim-default"
-proxy_version = "5018026"
-disable_push = False
+settings = read_json("tilt_option.json")
 
 # prepends the provided file name with the project root path
 def path(file):
+  project_home = settings.get("project_home")
   return "{}/{}".format(project_home, file)
 
 # generates the component name by stripping the 'linkerd-' prefix
@@ -31,7 +29,7 @@ def build_image_cmd(component):
 
 linkerd_path = path("bin/linkerd")
 
-default_registry(gcr_registry)
+default_registry(settings.get("default_registry"))
 k8s_yaml(linkerd_yaml())
 
 # rename each component by stripping away the 'linkerd-' prefix
@@ -86,7 +84,7 @@ custom_build(
   build_image_cmd("controller"),
   [path("controller"), path("pkg"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=disable_push,
+  disable_push=bool(settings.get("disable_push"))
 )
 
 custom_build(
@@ -94,7 +92,7 @@ custom_build(
   build_image_cmd("proxy-init"),
   [path("proxy-init"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=disable_push,
+  disable_push=bool(settings.get("disable_push"))
 )
 
 custom_build(
@@ -102,7 +100,7 @@ custom_build(
   build_image_cmd("web"),
   [path("web"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=disable_push
+  disable_push=bool(settings.get("disable_push"))
 )
 
 custom_build(
@@ -110,7 +108,7 @@ custom_build(
   build_image_cmd("grafana"),
   [path("grafana"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=disable_push,
+  disable_push=bool(settings.get("disable_push")),
   live_update=[
     sync(path('grafana/dashboards'), '/var/lib/grafana/dashboards'),
     sync(path('grafana/dashboards/top-line.json'), '/usr/share/grafana/public/dashboards/home.json'),
@@ -123,5 +121,5 @@ custom_build(
   build_image_cmd("proxy"),
   [path("proxy-identity"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=disable_push,
+  disable_push=bool(settings.get("disable_push"))
 )
