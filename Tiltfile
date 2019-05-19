@@ -4,7 +4,6 @@ k8s_resource_assembly_version(2)
 
 project_home = "/home/isim/workspace/go/src/github.com/linkerd/linkerd2"
 gcr_registry = "gcr.io/isim-default"
-image_tag = "isim-dev"
 proxy_version = "5018026"
 disable_push = False
 
@@ -21,6 +20,16 @@ def resource_name(id):
 def linkerd_yaml():
   watch_file(path("sh/init.sh"))
   return local(path("sh/init.sh"))
+
+# compute the images tag using the `head_root_tag` function of the bin/_tag.sh
+# script.
+def image_tag():
+  return str(local(path("sh/tag.sh")))
+
+# returns the command use to build the custom image using the
+# bin/docker-build-*.sh scripts
+def build_image_cmd(component):
+  return "{} {}".format(path("sh/build-image.sh"), component)
 
 linkerd_path = path("bin/linkerd")
 
@@ -65,35 +74,44 @@ k8s_resource("prometheus",
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "prometheus"}],
 )
 
+# Tilt expects the custom_build function to produce an image with the tag
+# $EXPECTED_REF, which is set by Tilt to `image_name:tag`.
+# See the https://docs.tilt.dev/api.html#api.custom_build doc.
+#
+# The tag of each component is set by calling the the `head_root_tag` function
+# of the bin/_tag.sh script. Each component's image is built by using the
+# bin/docker-build-*.sh script. The image is then tagged with the $EXPECTED_REF
+# tag.
+
 custom_build(
   "gcr.io/linkerd-io/controller",
-  "docker build -t $EXPECTED_REF --build-arg LINKERD_VERSION={} -f {} {}".format(image_tag, path("controller/Dockerfile"), project_home),
+  build_image_cmd("controller"),
   [path("controller"), path("pkg"), path("Tiltfile")],
-  tag=image_tag,
+  tag=image_tag(),
   disable_push=disable_push,
 )
 
 custom_build(
   "gcr.io/linkerd-io/proxy-init",
-  "docker build -t $EXPECTED_REF -f {} {}".format(path("proxy-init/Dockerfile"), project_home),
+  build_image_cmd("proxy-init"),
   [path("proxy-init"), path("Tiltfile")],
-  tag=image_tag,
+  tag=image_tag(),
   disable_push=disable_push,
 )
 
 custom_build(
   "gcr.io/linkerd-io/web",
-  "docker build -t $EXPECTED_REF --build-arg LINKERD_VERSION={} -f {} {}".format(image_tag, path("web/Dockerfile"), project_home),
+  build_image_cmd("web"),
   [path("web"), path("Tiltfile")],
-  tag=image_tag,
+  tag=image_tag(),
   disable_push=disable_push
 )
 
 custom_build(
   "gcr.io/linkerd-io/grafana",
-  "docker build -t $EXPECTED_REF -f {} {}".format(path("grafana/Dockerfile"), project_home),
+  build_image_cmd("grafana"),
   [path("grafana"), path("Tiltfile")],
-  tag=image_tag,
+  tag=image_tag(),
   disable_push=disable_push,
   live_update=[
     sync(path('grafana/dashboards'), '/var/lib/grafana/dashboards'),
@@ -104,8 +122,8 @@ custom_build(
 
 custom_build(
   "gcr.io/linkerd-io/proxy",
-  "docker build -t $EXPECTED_REF --build-arg PROXY_VERSION={} -f {} {}".format(proxy_version, path("Dockerfile-proxy"), project_home),
-  [path("proxy-identity")],
-  tag=image_tag,
+  build_image_cmd("proxy"),
+  [path("proxy-identity"), path("Tiltfile")],
+  tag=image_tag(),
   disable_push=disable_push,
 )
