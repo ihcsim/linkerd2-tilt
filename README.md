@@ -30,6 +30,7 @@ Create the following symlinks from the Linkerd2 repository to this repository:
 ln -s `pwd`/linkerd-tilt/Tiltfile $GOPATH/src/github.com/linkerd/linkerd2/Tiltfile
 ln -s `pwd`/linkerd-tilt/sh $GOPATH/src/github.com/linkerd/linkerd2/sh
 ln -s `pwd`/linkerd-tilt/tls $GOPATH/src/github.com/linkerd/linkerd2/tls
+ln -s `pwd`/linkerd-tilt/.tiltignore $GOPATH/src/github.com/linkerd/linkerd2/.tiltignore
 ```
 
 To get started, generate the mTLS assets with
