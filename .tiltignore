@@ -1,2 +1,7 @@
-**/*_test.go
-test
+**/*.test*
+**/*_test.go*
+**/*testdata
+**/*.swp
+**/*.swx
+**/*.go~
+**/*4913 # vim stuff
