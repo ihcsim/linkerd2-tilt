@@ -36,37 +36,37 @@ k8s_yaml(linkerd_yaml())
 workload_to_resource_function(resource_name)
 
 k8s_resource("controller",
-  port_forwards=["8085","9995","8086","9996","8088","9998"],
+  port_forwards=["8085","9995","8086","9996","8088","9998","32760:4191"],
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "controller"}],
 )
 
 k8s_resource("proxy-injector",
-  port_forwards=["8443"],
+  port_forwards=["8443","32761:4191"],
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "proxy-injector"}],
 )
 
 k8s_resource("identity",
-  port_forwards=["8080","9990"],
+  port_forwards=["8080","9990","32762:4191"],
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "identity"}],
 )
 
 k8s_resource("web",
-  port_forwards=["8084","9994"],
+  port_forwards=["8084","9994","32763:4191"],
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "web"}],
 )
 
 k8s_resource("sp-validator",
-  port_forwards=["8443"],
+  port_forwards=["8443","32764:4191"],
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "sp-validator"}],
 )
 
 k8s_resource("grafana",
-  port_forwards=["3000"],
+  port_forwards=["3000","32765:4191"],
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "grafana"}],
 )
 
 k8s_resource("prometheus",
-  port_forwards=["9090"],
+  port_forwards=["9090","32766:4191"],
   extra_pod_selectors=[{"linkerd.io/control-plane-component": "prometheus"}],
 )
 
