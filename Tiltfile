@@ -1,6 +1,6 @@
 # -*- mode: Python -*-
 
-settings = read_json("tilt_option.json")
+settings = read_json("tilt_options.json")
 
 # prepends the provided file name with the project root path
 def path(file, opts=""):
