@@ -1,3 +1,2 @@
 *.swp
-tls/ca.*
-tls/identity.linkerd.cluster.local.*
+.tls

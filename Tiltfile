@@ -2,11 +2,6 @@
 
 settings = read_json("tilt_options.json")
 
-# prepends the provided file name with the project root path
-def path(file, opts=""):
-  project_home = settings.get("project_home")
-  return "{}/{} {}".format(project_home, file, opts)
-
 # generates the component name by stripping the 'linkerd-' prefix
 def resource_name(id):
   if id.name.startswith("linkerd-"):
@@ -14,20 +9,18 @@ def resource_name(id):
 
 # (re-)install control plane, and watch all the deployments
 def linkerd_yaml():
-  watch_file(path("sh/init.sh"))
-  return local(path("sh/init.sh", settings.get("linkerd_install_opts")))
+  watch_file("bin/tilt-init.sh")
+  return local("bin/tilt-init.sh %s" % settings.get("linkerd_install_opts"))
 
 # compute the images tag using the `head_root_tag` function of the bin/_tag.sh
 # script.
 def image_tag():
-  return str(local(path("sh/tag.sh")))
+  return str(local("bin/tilt-tag.sh"))
 
 # returns the command use to build the custom image using the
 # bin/docker-build-*.sh scripts
 def build_image_cmd(component):
-  return "{} {}".format(path("sh/build-image.sh"), component)
-
-linkerd_path = path("bin/linkerd")
+  return "bin/tilt-build-image.sh %s" % component
 
 default_registry(settings.get("default_registry"))
 k8s_yaml(linkerd_yaml())
@@ -82,32 +75,32 @@ k8s_resource("prometheus",
 custom_build(
   "gcr.io/linkerd-io/controller",
   build_image_cmd("controller"),
-  [path("controller"), path("pkg"), path("Tiltfile")],
+  ["controller", "pkg", "Tiltfile"],
   tag=image_tag(),
 )
 
 custom_build(
   "gcr.io/linkerd-io/proxy-init",
   build_image_cmd("proxy-init"),
-  [path("proxy-init"), path("Tiltfile")],
+  ["proxy-init", "Tiltfile"],
   tag=image_tag(),
 )
 
 custom_build(
   "gcr.io/linkerd-io/web",
   build_image_cmd("web"),
-  [path("web"), path("Tiltfile")],
+  ["web", "Tiltfile"],
   tag=image_tag(),
 )
 
 custom_build(
   "gcr.io/linkerd-io/grafana",
   build_image_cmd("grafana"),
-  [path("grafana"), path("Tiltfile")],
+  ["grafana", "Tiltfile"],
   tag=image_tag(),
   live_update=[
-    sync(path('grafana/dashboards'), '/var/lib/grafana/dashboards'),
-    sync(path('grafana/dashboards/top-line.json'), '/usr/share/grafana/public/dashboards/home.json'),
+    sync("grafana/dashboards", "/var/lib/grafana/dashboards"),
+    sync("grafana/dashboards/top-line.json", "/usr/share/grafana/public/dashboards/home.json"),
     restart_container(),
   ]
 )
@@ -115,6 +108,6 @@ custom_build(
 custom_build(
   "gcr.io/linkerd-io/proxy",
   build_image_cmd("proxy"),
-  [path("proxy-identity"), path("Tiltfile")],
+  ["proxy-identity", "Tiltfile"],
   tag=image_tag(),
 )

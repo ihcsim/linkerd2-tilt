@@ -5,8 +5,7 @@ This repository contains the Tiltfile to run [Tilt](https://tilt.dev/) with the 
 The goal of this project is to find a tool that improves my development workflow.
 
 Specifically, the tool will enable:
-* Uninterrrupted development experience with fast feedback loop
-  * Rebuild and redeploy only what is changed
+* Uninterrrupted development experience with fast feedback loop; i.e. rebuild and redeploy only what is changed
 * Works with the current [Linkerd2 control plane repository](https://github.com/linkerd/linkerd2) layout, which contains:
   * source code for multiple components
   * mulitple Dockerfiles
@@ -23,24 +22,29 @@ The project uses the following software:
 * [Minikube](https://github.com/kubernetes/minikube)
 * [Linkerd 2](https://linkerd.io/2/tasks/install/)
 
-If image push is required, modify the `default_registry` and `disable_push` options in the `tilt_option.json` file.
+The `tilt_options.json` support the following options:
+
+Option                 | Description
+---------------------- | -----------------------------------------
+`default_registry`     | the Docker registry to use for the images
+`linkerd_install_opts` | additional options to be added to the Linkerd `install` command
 
 ### Tilt
 
-Create the following symlinks from the Linkerd2 repository to this repository:
-```bash
-ln -s `pwd`/linkerd-tilt/Tiltfile $GOPATH/src/github.com/linkerd/linkerd2/Tiltfile
-ln -s `pwd`/linkerd-tilt/sh $GOPATH/src/github.com/linkerd/linkerd2/sh
-ln -s `pwd`/linkerd-tilt/tls $GOPATH/src/github.com/linkerd/linkerd2/tls
-ln -s `pwd`/linkerd-tilt/.tiltignore $GOPATH/src/github.com/linkerd/linkerd2/.tiltignore
-ln -s `pwd`/linkerd-tilt/tilt_option.json $GOPATH/src/github.com/linkerd/linkerd2/tilt_option.json
-```
+To get started, copy the following folders and files to the Linkerd repository:
 
-To get started, generate the mTLS assets with
+Copy from           | Copy to
+------------------- | ------
+`Tiltfile`          | Linkerd project root folder
+`tilt_options.json` | Linkerd project root folder
+`.tiltignore`       | Linkerd project root folder
+`bin/*`             | Linkerd project `bin` folder
+
+Generate the mTLS assets with:
 ```sh
-$ NEW_TLS_ASSETS=true sh/gen-tls.sh
+$ NEW_TLS_ASSETS=true bin/tilt-gen-tls.sh
 ```
-All done self-signed TLS assets used for mTLS will be stored in the git-ignored `tls` folder. The folder path can be overridden by using the `TLS_FOLDER` environment variable.
+All the mTLS assets can be found in the `.tls` folder.
 
 Then run:
 ```sh
