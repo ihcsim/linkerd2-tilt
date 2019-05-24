@@ -3,9 +3,9 @@
 settings = read_json("tilt_option.json")
 
 # prepends the provided file name with the project root path
-def path(file):
+def path(file, opts=""):
   project_home = settings.get("project_home")
-  return "{}/{}".format(project_home, file)
+  return "{}/{} {}".format(project_home, file, opts)
 
 # generates the component name by stripping the 'linkerd-' prefix
 def resource_name(id):
@@ -15,7 +15,7 @@ def resource_name(id):
 # (re-)install control plane, and watch all the deployments
 def linkerd_yaml():
   watch_file(path("sh/init.sh"))
-  return local(path("sh/init.sh"))
+  return local(path("sh/init.sh", settings.get("linkerd_install_opts")))
 
 # compute the images tag using the `head_root_tag` function of the bin/_tag.sh
 # script.

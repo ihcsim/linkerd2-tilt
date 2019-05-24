@@ -1,5 +1,6 @@
 {
   "default_registry": "gcr.io/isim-default",
   "project_home": "/home/isim/workspace/go/src/github.com/linkerd/linkerd2",
-  "disable_push": false
+  "disable_push": false,
+  "linkerd_install_opts": "--ignore-cluster"
 }

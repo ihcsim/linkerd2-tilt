@@ -15,8 +15,9 @@ if [ "${NEW_TLS_ASSETS}" = "true" ]; then
   exit $?
 fi
 
-${LINKERD_BIN} install --ignore-cluster \
+${LINKERD_BIN} install \
   --identity-issuer-certificate-file ${ISSUER_CERT_FILE} \
   --identity-issuer-key-file ${ISSUER_KEY_FILE} \
   --identity-trust-anchors-file ${CA_CERT_FILE} \
-  --identity-trust-domain ${CLUSTER_DOMAIN}
+  --identity-trust-domain ${CLUSTER_DOMAIN} \
+  $@
