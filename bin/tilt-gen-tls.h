@@ -9,6 +9,7 @@ openssl_config_file=${bindir}/tilt-openssl.cnf
 cert_validity_days=30
 ca_cert_file=${tlsdir}/ca.crt
 ca_key_file=${tlsdir}/ca.key
+ca_cert_serial_number_file=${tlsdir}/ca.srl
 issuer_key_file=${tlsdir}/identity.linkerd.cluster.local.key
 issuer_cert_file=${tlsdir}/identity.linkerd.cluster.local.crt
 issuer_pub_key_file=${tlsdir}/identity.linkerd.cluster.local.key.pub
@@ -38,6 +39,9 @@ openssl x509 -req \
   -CA ${ca_cert_file} \
   -CAkey ${ca_key_file} \
   -CAcreateserial \
+  -CAserial ${ca_cert_serial_number_file} \
   -extensions v3_req \
   -extfile ${openssl_config_file} \
   -out ${issuer_cert_file}
+
+mv .srl .tls/ca.srl
