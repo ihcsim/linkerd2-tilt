@@ -84,7 +84,6 @@ custom_build(
   build_image_cmd("controller"),
   [path("controller"), path("pkg"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=bool(settings.get("disable_push"))
 )
 
 custom_build(
@@ -92,7 +91,6 @@ custom_build(
   build_image_cmd("proxy-init"),
   [path("proxy-init"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=bool(settings.get("disable_push"))
 )
 
 custom_build(
@@ -100,7 +98,6 @@ custom_build(
   build_image_cmd("web"),
   [path("web"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=bool(settings.get("disable_push"))
 )
 
 custom_build(
@@ -108,7 +105,6 @@ custom_build(
   build_image_cmd("grafana"),
   [path("grafana"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=bool(settings.get("disable_push")),
   live_update=[
     sync(path('grafana/dashboards'), '/var/lib/grafana/dashboards'),
     sync(path('grafana/dashboards/top-line.json'), '/usr/share/grafana/public/dashboards/home.json'),
@@ -121,5 +117,4 @@ custom_build(
   build_image_cmd("proxy"),
   [path("proxy-identity"), path("Tiltfile")],
   tag=image_tag(),
-  disable_push=bool(settings.get("disable_push"))
 )
