@@ -98,7 +98,7 @@ tap = {
   "new_name": "tap",
   "port_forwards": ["8088","8089", "30998:9998","31767:4191"],
   "labels": [
-    {"linkerd.io/control-plane-component": "sp-validator"},
+    {"linkerd.io/control-plane-component": "tap"},
   ]
 }
 
@@ -109,7 +109,7 @@ web = {
   "deps": ["./web"],
   "port_forwards": ["8084", "30994:9994","31768:4191"],
   "labels": [
-    {"linkerd.io/control-plane-component": "sp-validator"},
+    {"linkerd.io/control-plane-component": "web"},
   ]
 }
 
