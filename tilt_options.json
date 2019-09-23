@@ -1,4 +1,6 @@
 {
+  "allow_k8s_contexts": ["isim-dev"],
   "default_registry": "gcr.io/isim-default",
+  "linkerd_bin": "bin/linkerd",
   "linkerd_install_opts": "--ignore-cluster"
 }

@@ -1,113 +1,25 @@
 # -*- mode: Python -*-
 
-settings = read_json("tilt_options.json")
+trigger_mode(TRIGGER_MODE_MANUAL)
+load("./bin/_tilt", "components", "image_tag", "images", "linkerd_yaml", "settings")
 
-# generates the component name by stripping the 'linkerd-' prefix
-def resource_name(id):
-  if id.name.startswith("linkerd-"):
-    return id.name[8:]
+#default_registry(settings.get("default_registry"))
+allow_k8s_contexts(settings.get("allow_k8s_contexts"))
 
-# (re-)install control plane, and watch all the deployments
-def linkerd_yaml():
-  watch_file("bin/tilt-init.sh")
-  return local("bin/tilt-init.sh %s" % settings.get("linkerd_install_opts"))
-
-# compute the images tag using the `head_root_tag` function of the bin/_tag.sh
-# script.
-def image_tag():
-  return str(local("bin/tilt-tag.sh"))
-
-# returns the command use to build the custom image using the
-# bin/docker-build-*.sh scripts
-def build_image_cmd(component):
-  return "bin/tilt-build-image.sh %s" % component
-
-default_registry(settings.get("default_registry"))
 k8s_yaml(linkerd_yaml())
 
-# rename each component by stripping away the 'linkerd-' prefix
-workload_to_resource_function(resource_name)
+for component in components:
+  k8s_resource(
+    component["name"],
+    new_name=component["new_name"],
+    port_forwards=component["port_forwards"] if "port_forwards" in component else [],
+    extra_pod_selectors=component["labels"],
+  )
 
-k8s_resource("controller",
-  port_forwards=["8085","9995","8086","9996","8088","9998","32760:4191"],
-  extra_pod_selectors=[{"linkerd.io/control-plane-component": "controller"}],
-)
-
-k8s_resource("proxy-injector",
-  port_forwards=["8443","32761:4191"],
-  extra_pod_selectors=[{"linkerd.io/control-plane-component": "proxy-injector"}],
-)
-
-k8s_resource("identity",
-  port_forwards=["8080","9990","32762:4191"],
-  extra_pod_selectors=[{"linkerd.io/control-plane-component": "identity"}],
-)
-
-k8s_resource("web",
-  port_forwards=["8084","9994","32763:4191"],
-  extra_pod_selectors=[{"linkerd.io/control-plane-component": "web"}],
-)
-
-k8s_resource("sp-validator",
-  port_forwards=["8443","32764:4191"],
-  extra_pod_selectors=[{"linkerd.io/control-plane-component": "sp-validator"}],
-)
-
-k8s_resource("grafana",
-  port_forwards=["3000","32765:4191"],
-  extra_pod_selectors=[{"linkerd.io/control-plane-component": "grafana"}],
-)
-
-k8s_resource("prometheus",
-  port_forwards=["9090","32766:4191"],
-  extra_pod_selectors=[{"linkerd.io/control-plane-component": "prometheus"}],
-)
-
-# Tilt expects the custom_build function to produce an image with the tag
-# $EXPECTED_REF, which is set by Tilt to `image_name:tag`.
-# See the https://docs.tilt.dev/api.html#api.custom_build doc.
-#
-# The tag of each component is set by calling the the `head_root_tag` function
-# of the bin/_tag.sh script. Each component's image is built by using the
-# bin/docker-build-*.sh script. The image is then tagged with the $EXPECTED_REF
-# tag.
-
-custom_build(
-  "gcr.io/linkerd-io/controller",
-  build_image_cmd("controller"),
-  ["controller", "pkg", "Tiltfile"],
-  tag=image_tag(),
-)
-
-custom_build(
-  "gcr.io/linkerd-io/proxy-init",
-  build_image_cmd("proxy-init"),
-  ["proxy-init", "Tiltfile"],
-  tag=image_tag(),
-)
-
-custom_build(
-  "gcr.io/linkerd-io/web",
-  build_image_cmd("web"),
-  ["web", "Tiltfile"],
-  tag=image_tag(),
-)
-
-custom_build(
-  "gcr.io/linkerd-io/grafana",
-  build_image_cmd("grafana"),
-  ["grafana", "Tiltfile"],
-  tag=image_tag(),
-  live_update=[
-    sync("grafana/dashboards", "/var/lib/grafana/dashboards"),
-    sync("grafana/dashboards/top-line.json", "/usr/share/grafana/public/dashboards/home.json"),
-    restart_container(),
-  ]
-)
-
-custom_build(
-  "gcr.io/linkerd-io/proxy",
-  build_image_cmd("proxy"),
-  ["proxy-identity", "Tiltfile"],
-  tag=image_tag(),
-)
+for image in images:
+  custom_build(
+    image["image"],
+    "./bin/docker-build-%s && docker tag %s:%s $EXPECTED_REF" % (image["new_name"], image["image"], image_tag()),
+    image["deps"],
+    tag=image_tag()
+  )
