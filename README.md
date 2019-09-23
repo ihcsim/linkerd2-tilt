@@ -1,56 +1,42 @@
 # Linkerd Tilt
-This repository contains the Tiltfile to run [Tilt](https://tilt.dev/) with the [Linkerd 2](https://linkerd.io/) control plane.
-
-## Objectives
-The goal of this project is to find a tool that improves my development workflow.
-
-Specifically, the tool will enable:
-* Uninterrrupted development experience with fast feedback loop; i.e. rebuild and redeploy only what is changed
-* Works with the current [Linkerd2 control plane repository](https://github.com/linkerd/linkerd2) layout, which contains:
-  * source code for multiple components
-  * mulitple Dockerfiles
-  * static assets like CSS and Javascripts
-  * partial "uninjected" helm charts
-  * protobuf files
-  * shared libraries in the `pkg` folder
-* A way to pin the image tag and pass it to the Dockerfile as a build argument
+This repository contains the Tiltfile to run [Tilt](https://docs.tilt.dev/welcome_to_tilt.html) with the [Linkerd](https://linkerd.io/) control plane.
 
 ## Getting Started
 The project uses the following software:
 
-* [Tilt v0.8.0, built 2019-04-22](https://docs.tilt.dev/install.html)
-* [Minikube](https://github.com/kubernetes/minikube)
-* [Linkerd 2](https://linkerd.io/2/tasks/install/)
+* [Linkerd](https://linkerd.io/2/tasks/install/)
+* [Tilt v0.10.8, built 2019-09-20](https://docs.tilt.dev/install.html)
+* [Kind v0.5.1](https://kind.sigs.k8s.io)
+* [jq 1.5-1-a5b5cbe](https://stedolan.github.io/jq/)
 
 The `tilt_options.json` support the following options:
 
 Option                 | Description
 ---------------------- | -----------------------------------------
-`default_registry`     | the Docker registry to use for the images
+`allow_k8s_contexts`   | the k8s context names that Tilt is allowed to run (for development on remote clusters only)
+`default_registry`     | the Docker registry to use for the images (for development on remote clusters only)
 `linkerd_install_opts` | additional options to be added to the Linkerd `install` command
 
 ### Tilt
-
-To get started, copy the following folders and files to the Linkerd repository:
+To get started, copy the following files to the Linkerd fork:
 
 Copy from           | Copy to
 ------------------- | ------
 `Tiltfile`          | Linkerd project root folder
 `tilt_options.json` | Linkerd project root folder
 `.tiltignore`       | Linkerd project root folder
-`bin/*`             | Linkerd project `bin` folder
+`bin/_tilt`         | Linkerd project `bin` folder
 
-Generate the mTLS assets with:
-```sh
-$ NEW_TLS_ASSETS=true bin/tilt-gen-tls.sh
-```
-All the mTLS assets can be found in the `.tls` folder.
-
-Then run:
+When ready, run:
 ```sh
 $ tilt up
 ```
+Notice that by default, the `TRIGGER_MODE_MANUAL` mode is used, implying that
+Tilt will only update any changes in the Linkerd components when manually
+triggered from the Tilt UI. See [dpcs](https://docs.tilt.dev/manual_update_control.html)
+for more information.
 
-This will install the Linkerd 2 control plane using the `linkerd install` command.
-
-When done, use `tilt down` to remove the control plane.
+When done:
+```sh
+$ tilt down
+```
