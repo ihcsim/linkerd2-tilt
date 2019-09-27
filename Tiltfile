@@ -1,7 +1,7 @@
 # -*- mode: Python -*-
 
 trigger_mode(TRIGGER_MODE_MANUAL)
-load("./bin/_tilt", "components", "image_tag", "images", "linkerd_yaml", "settings")
+load("./bin/_tilt", "components", "images", "linkerd_yaml", "settings")
 
 #default_registry(settings.get("default_registry"))
 allow_k8s_contexts(settings.get("allow_k8s_contexts"))
@@ -19,7 +19,6 @@ for component in components:
 for image in images:
   custom_build(
     image["image"],
-    "./bin/docker-build-%s && docker tag %s:%s $EXPECTED_REF" % (image["new_name"], image["image"], image_tag()),
-    image["deps"],
-    tag=image_tag()
+    "ACTUAL_REF=$(./bin/docker-build-%s) && docker tag $ACTUAL_REF $EXPECTED_REF" % image["short_name"],
+    image["deps"]
   )
