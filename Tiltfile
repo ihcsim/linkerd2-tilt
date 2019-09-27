@@ -11,7 +11,7 @@ k8s_yaml(linkerd_yaml())
 for component in components:
   k8s_resource(
     component["name"],
-    new_name=component["new_name"],
+    new_name=component["short_name"],
     port_forwards=component["port_forwards"] if "port_forwards" in component else [],
     extra_pod_selectors=component["labels"],
   )

@@ -8,19 +8,18 @@ def linkerd_yaml():
 
   # run `linkerd install` if the control plane namespace doesn't exist.
   # otherwise, run `linkerd upgrade`.
-  ns_exists = str(local("%s check -o json | jq -r '.categories[] | select(.categoryName==\"linkerd-config\") | .checks[0].result'" % linkerd))
+  ns_exists = str(local("%s check --wait=1s -o json | jq -r '.categories[] | select(.categoryName==\"linkerd-config\") | .checks[0].result'" % linkerd))
+  version = str(local("%s version --short --client" % linkerd))
   if ns_exists.lower().strip() == "error":
+    print("Installing Linkerd %s" % version)
     return local("%s install %s" % (linkerd, settings.get("linkerd_install_opts")))
   else:
+    print("Upgrading existing Linkerd to %s" % version)
     return local("%s upgrade" % linkerd)
-
-# compute the images tag using the `head_root_tag` function of `bin/_tag.sh`
-def image_tag():
-  return str(local("bash -c 'source ./bin/_tag.sh && head_root_tag'")).strip()
 
 controller = {
   "name": "linkerd-controller",
-  "new_name": "controller",
+  "short_name": "controller",
   "deps": ["./controller", "./pkg"],
   "image": "gcr.io/linkerd-io/controller",
   "port_forwards": ["30085:8085","9995","31760:4191"],
@@ -31,7 +30,7 @@ controller = {
 
 destination = {
   "name": "linkerd-destination",
-  "new_name": "destination",
+  "short_name": "destination",
   "port_forwards": ["8086","30996:9996","31761:4191"],
   "labels": [
     {"linkerd.io/control-plane-component": "destination"},
@@ -40,7 +39,7 @@ destination = {
 
 grafana = {
   "name": "linkerd-grafana",
-  "new_name": "grafana",
+  "short_name": "grafana",
   "image": "gcr.io/linkerd-io/grafana",
   "deps": ["./grafana"],
   "port_forwards": ["3000","31762:4192"],
@@ -51,7 +50,7 @@ grafana = {
 
 heartbeat = {
   "name": "linkerd-heartbeat",
-  "new_name": "heartbeat",
+  "short_name": "heartbeat",
   "labels": [
     {"linkerd.io/control-plane-component": "heartbeat"},
   ]
@@ -59,7 +58,7 @@ heartbeat = {
 
 identity = {
   "name": "linkerd-identity",
-  "new_name": "identity",
+  "short_name": "identity",
   "port_forwards": ["31080:8080","30990:9990","31763:4191"],
   "labels": [
     {"linkerd.io/control-plane-component": "identity"},
@@ -68,7 +67,7 @@ identity = {
 
 prometheus = {
   "name": "linkerd-prometheus",
-  "new_name": "prometheus",
+  "short_name": "prometheus",
   "port_forwards": ["9090","31764:4191"],
   "labels": [
     {"linkerd.io/control-plane-component": "prometheus"},
@@ -77,7 +76,7 @@ prometheus = {
 
 proxy_injector = {
   "name": "linkerd-proxy-injector",
-  "new_name": "proxy-injector",
+  "short_name": "proxy-injector",
   "port_forwards": ["31443:8443","30995:9995","31765:4191"],
   "labels": [
     {"linkerd.io/control-plane-component": "proxy-injector"},
@@ -86,7 +85,7 @@ proxy_injector = {
 
 sp_validator = {
   "name": "linkerd-sp-validator",
-  "new_name": "sp-validator",
+  "short_name": "sp-validator",
   "port_forwards": ["32443:8443","30997:9997","31766:4191"],
   "labels": [
     {"linkerd.io/control-plane-component": "sp-validator"},
@@ -95,7 +94,7 @@ sp_validator = {
 
 tap = {
   "name": "linkerd-tap",
-  "new_name": "tap",
+  "short_name": "tap",
   "port_forwards": ["8088","8089", "30998:9998","31767:4191"],
   "labels": [
     {"linkerd.io/control-plane-component": "tap"},
@@ -104,7 +103,7 @@ tap = {
 
 web = {
   "name": "linkerd-web",
-  "new_name": "web",
+  "short_name": "web",
   "image": "gcr.io/linkerd-io/web",
   "deps": ["./web"],
   "port_forwards": ["8084", "30994:9994","31768:4191"],
