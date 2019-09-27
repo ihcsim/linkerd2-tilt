@@ -17,8 +17,7 @@ Option                 | Description
 `default_registry`     | the Docker registry to use for the images (for development on remote clusters only)
 `linkerd_install_opts` | additional options to be added to the Linkerd `install` command
 
-### Tilt
-To get started, copy the following files to the Linkerd fork:
+To get started, copy the following files to your Linkerd fork:
 
 Copy from           | Copy to
 ------------------- | ------
@@ -26,6 +25,8 @@ Copy from           | Copy to
 `tilt_options.json` | Linkerd project root folder
 `.tiltignore`       | Linkerd project root folder
 `bin/_tilt`         | Linkerd project `bin` folder
+
+Install the Linkerd CLI by following the instruction [here](https://linkerd.io/2/getting-started/).
 
 When ready, run:
 ```sh
