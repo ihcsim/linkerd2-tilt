@@ -17,10 +17,23 @@ for component in components:
   )
 
 for image in images:
-  custom_build(
-    image["image"],
-    "ACTUAL_REF=$(./bin/docker-build-%s) && docker tag $ACTUAL_REF $EXPECTED_REF" % image["short_name"],
-    image["deps"]
-  )
+  if "live_update" in image:
+    sync_from = image["live_update"]["sync"]["from"]
+    sync_to = image["live_update"]["sync"]["to"]
+
+    custom_build(
+      image["image"],
+      "ACTUAL_REF=$(./bin/docker-build-%s) && docker tag $ACTUAL_REF $EXPECTED_REF" % image["short_name"],
+      image["deps"],
+      live_update=[
+        sync(sync_from, sync_to),
+      ],
+    )
+  else:
+    custom_build(
+      image["image"],
+      "ACTUAL_REF=$(./bin/docker-build-%s) && docker tag $ACTUAL_REF $EXPECTED_REF" % image["short_name"],
+      image["deps"],
+    )
 
 local_resource("protobuf", "./bin/protoc-go.sh", ["./proto"], TRIGGER_MODE_AUTO)
