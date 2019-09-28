@@ -22,3 +22,5 @@ for image in images:
     "ACTUAL_REF=$(./bin/docker-build-%s) && docker tag $ACTUAL_REF $EXPECTED_REF" % image["short_name"],
     image["deps"]
   )
+
+local_resource("protobuf", "./bin/protoc-go.sh", ["./proto"], TRIGGER_MODE_AUTO)

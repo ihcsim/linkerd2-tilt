@@ -1,5 +1,5 @@
 {
-  "allow_k8s_contexts": ["isim-dev"],
+  "allow_k8s_contexts": [""],
   "default_registry": "gcr.io/isim-default",
   "linkerd_bin": "linkerd",
   "linkerd_install_opts": "--ignore-cluster"
