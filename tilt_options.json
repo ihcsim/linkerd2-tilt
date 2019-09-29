@@ -1,6 +1,7 @@
 {
   "allow_k8s_contexts": [""],
-  "default_registry": "gcr.io/isim-default",
-  "linkerd_bin": "linkerd",
-  "linkerd_install_opts": "--ignore-cluster"
+  "default_registry": "",
+  "linkerd_bin": "bin/linkerd",
+  "linkerd_install_opts": "--ignore-cluster",
+  "proxy_version": "edge-19.9.4"
 }

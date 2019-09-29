@@ -5,17 +5,18 @@ settings = read_json("../tilt_options.json")
 # output the Linkerd control plane YAML
 def linkerd_yaml():
   linkerd = settings.get("linkerd_bin")
+  proxy_version = settings.get("proxy_version")
+
+  # build the local CLI
+  local("./bin/build-cli-bin")
 
   # run `linkerd install` if the control plane namespace doesn't exist.
   # otherwise, run `linkerd upgrade`.
   ns_exists = str(local("%s check --wait=1s -o json | jq -r '.categories[] | select(.categoryName==\"linkerd-config\") | .checks[0].result'" % linkerd))
-  version = str(local("%s version --short --client" % linkerd))
   if ns_exists.lower().strip() == "error":
-    print("Installing Linkerd %s" % version)
-    return local("%s install %s" % (linkerd, settings.get("linkerd_install_opts")))
+    return local("%s install --proxy-version=%s %s" % (linkerd, proxy_version , settings.get("linkerd_install_opts")))
   else:
-    print("Upgrading existing Linkerd to %s" % version)
-    return local("%s upgrade" % linkerd)
+    return local("%s upgrade --proxy-version=%s" % (linkerd,proxy_version))
 
 controller = {
   "name": "linkerd-controller",
@@ -25,7 +26,7 @@ controller = {
   "port_forwards": ["30085:8085","9995","31760:4191"],
   "labels": [
     {"linkerd.io/control-plane-component": "controller"},
-  ]
+  ],
 }
 
 destination = {
@@ -45,7 +46,13 @@ grafana = {
   "port_forwards": ["3000","31762:4192"],
   "labels": [
     {"linkerd.io/control-plane-component": "grafana"},
-  ]
+  ],
+  "live_update": {
+    "sync": {
+      "from": "./grafana/dashboards",
+      "to": "/var/lib/grafana/dashboards"
+    }
+  },
 }
 
 heartbeat = {
@@ -114,4 +121,4 @@ web = {
 
 components = [controller, destination, grafana, heartbeat, identity, prometheus, proxy_injector, sp_validator, tap, web]
 
-images = [controller, web, grafana]
+images = [controller, grafana, web]
