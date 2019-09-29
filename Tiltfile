@@ -36,4 +36,6 @@ for image in images:
       image["deps"],
     )
 
+local_resource("cli", "./bin/build-cli-bin", ["./cli"], TRIGGER_MODE_MANUAL)
+local_resource("helm_templates", "./bin/helm-build", ["./charts"], TRIGGER_MODE_MANUAL)
 local_resource("protobuf", "./bin/protoc-go.sh", ["./proto"], TRIGGER_MODE_AUTO)
