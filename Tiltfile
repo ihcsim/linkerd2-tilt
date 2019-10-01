@@ -5,6 +5,7 @@ load("./bin/_tilt", "components", "images", "linkerd_yaml", "settings")
 
 #default_registry(settings.get("default_registry"))
 allow_k8s_contexts(settings.get("allow_k8s_contexts"))
+enable_feature("snapshots")
 
 k8s_yaml(linkerd_yaml())
 
