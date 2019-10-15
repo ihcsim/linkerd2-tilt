@@ -39,5 +39,6 @@ for image in images:
 
 local_resource("cli", "./bin/build-cli-bin", ["./cli"], TRIGGER_MODE_MANUAL)
 local_resource("helm_templates", "./bin/helm-build && echo -e \"\033[42mUpdated Helm templates. To deploy new changes, please restart Tilt.\033[0m\"", ["./charts"], TRIGGER_MODE_MANUAL)
-
 local_resource("protobuf", "./bin/protoc-go.sh", ["./proto"], TRIGGER_MODE_AUTO)
+local_resource("proxy-identity", "bin/docker-build-proxy", ["./proxy-identity"], TRIGGER_MODE_MANUAL)
+local_resource("unit test", "go test -cover -race -mod=readonly ./...", ["**/*_test.go"], TRIGGER_MODE_MANUAL)
