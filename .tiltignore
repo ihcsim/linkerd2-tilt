@@ -6,3 +6,4 @@
 **/*.go~
 **/*4913 # vim stuff
 charts/*/*charts
+pkg/charts/static/generated_templates.gogen.go
