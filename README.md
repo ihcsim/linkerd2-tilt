@@ -1,21 +1,18 @@
 # Linkerd Tilt
-This repository contains the Tiltfile to run [Tilt](https://docs.tilt.dev/welcome_to_tilt.html) with the [Linkerd](https://linkerd.io/) control plane.
+This repository contains the Tiltfile used in the [_Code Fast and Test Accurately Without Kubectl_](https://cfp.cloud-native.rejekts.io/cloud-native-rejekts-na-2019/talk/HYEW3M/) talk at [Rejekts NA 2019](https://cloud-native.rejekts.io/). The Tiltfile automates the build and deploy steps of the [Linkerd control planei](https://github.com/linkerd/linkerd2).
+
+## Resources
+
+* Presentation slide: Coming soon
+* Presentation recording: Coming soon
 
 ## Getting Started
-The project uses the following software:
+The project is tested with the following software:
 
-* [Linkerd](https://linkerd.io/2/tasks/install/)
-* [Tilt v0.10.8, built 2019-09-20](https://docs.tilt.dev/install.html)
+* [Linkerd edge-19.11.2](https://linkerd.io/2/getting-started/#step-0-setup)
+* [Tilt v0.10.17, built 2019-11-01](https://docs.tilt.dev/install.html)
 * [Kind v0.5.1](https://kind.sigs.k8s.io)
 * [jq 1.5-1-a5b5cbe](https://stedolan.github.io/jq/)
-
-The `tilt_options.json` support the following options:
-
-Option                 | Description
----------------------- | -----------------------------------------
-`allow_k8s_contexts`   | the k8s context names that Tilt is allowed to run (for development on remote clusters only)
-`default_registry`     | the Docker registry to use for the images (for development on remote clusters only)
-`linkerd_install_opts` | additional options to be added to the Linkerd `install` command
 
 To get started, copy the following files to your Linkerd fork:
 
@@ -26,16 +23,10 @@ Copy from           | Copy to
 `.tiltignore`       | Linkerd project root folder
 `bin/_tilt`         | Linkerd project `bin` folder
 
-Install the Linkerd CLI by following the instruction [here](https://linkerd.io/2/getting-started/).
-
 When ready, run:
 ```sh
 $ tilt up
 ```
-Notice that by default, the `TRIGGER_MODE_MANUAL` mode is used, implying that
-Tilt will only update any changes in the Linkerd components when manually
-triggered from the Tilt UI. See [dpcs](https://docs.tilt.dev/manual_update_control.html)
-for more information.
 
 When done:
 ```sh
