@@ -3,7 +3,7 @@ This repository contains the Tiltfile used in the [_Code Fast and Test Accuratel
 
 ## Resources
 
-* Presentation slide: Coming soon
+* Presentation slide: https://cfp.cloud-native.rejekts.io/media/Rejekts_NA_2019_-_Linkerd__Tilt_i7tr018.pdf
 * Presentation recording: Coming soon
 
 ## Getting Started
