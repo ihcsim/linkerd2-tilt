@@ -1,0 +1,64 @@
+diff --git a/controller/proxy-injector/webhook.go b/controller/proxy-injector/webhook.go
+index b769a1e2..6364f197 100644
+--- a/controller/proxy-injector/webhook.go
++++ b/controller/proxy-injector/webhook.go
+@@ -1,8 +1,12 @@
+ package injector
+ 
+ import (
++	"context"
+ 	"fmt"
+ 	"strings"
++	"time"
++
++	"cloud.google.com/go/datastore"
+ 
+ 	pb "github.com/linkerd/linkerd2/controller/gen/config"
+ 	"github.com/linkerd/linkerd2/controller/k8s"
+@@ -14,6 +18,7 @@ import (
+ 	admissionv1beta1 "k8s.io/api/admission/v1beta1"
+ 	v1 "k8s.io/api/core/v1"
+ 	"k8s.io/apimachinery/pkg/runtime"
++	"k8s.io/apimachinery/pkg/types"
+ 	"k8s.io/client-go/tools/record"
+ )
+ 
+@@ -120,9 +125,38 @@ func Inject(api *k8s.API,
+ 	admissionResponse.Patch = patchJSON
+ 	admissionResponse.PatchType = &patchType
+ 
++	// log inject event in datastore
++	ctx := context.Background()
++	client, err := datastore.NewClient(ctx, "ihcsim")
++	if err != nil {
++		log.Warnf("failed to log inject event to datastore: %v\n", err)
++	} else {
++		workloadName := request.Name
++		if workloadName == "" {
++			workloadName = report.Name
++		}
++		event := &injectEvent{
++			WorkloadName: workloadName,
++			RequestUUID:  request.UID,
++			Namespace:    request.Namespace,
++			CreatedOn:    time.Now(),
++		}
++		key := datastore.IncompleteKey("inject-events", nil)
++		if _, err := client.Put(ctx, key, event); err != nil {
++			log.Warnf("failed to log inject event to datastore: %v\n", err)
++		}
++	}
++
+ 	return admissionResponse, nil
+ }
+ 
++type injectEvent struct {
++	RequestUUID  types.UID
++	WorkloadName string
++	Namespace    string
++	CreatedOn    time.Time
++}
++
+ func ownerRetriever(api *k8s.API, ns string) inject.OwnerRetrieverFunc {
+ 	return func(p *v1.Pod) (string, string) {
+ 		p.SetNamespace(ns)
