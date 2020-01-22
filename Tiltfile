@@ -3,9 +3,11 @@
 trigger_mode(TRIGGER_MODE_MANUAL)
 load("./bin/_tilt", "images", "linkerd_yaml", "settings")
 
-default_registry(settings.get("default_registry"))
-allow_k8s_contexts(settings.get("allow_k8s_contexts"))
-enable_feature("snapshots")
+if settings.get("default_registry"):
+  default_registry(settings.get("default_registry"))
+
+if settings.get("allow_k8s_context"):
+  allow_k8s_contexts(settings.get("allow_k8s_contexts"))
 
 k8s_yaml(linkerd_yaml())
 
@@ -28,12 +30,3 @@ for image in images:
       "ACTUAL_REF=$(./bin/docker-build-%s) && docker tag $ACTUAL_REF $EXPECTED_REF" % image["name"],
       image["deps"],
     )
-
-  if "unit_tests" in image:
-    packages = " ".join(image["unit_tests"])
-    local_resource("unit test", "go test %s" % packages, image["unit_tests"], TRIGGER_MODE_AUTO)
-
-local_resource("cli", "go test -mod=readonly ./cli/... && ./bin/build-cli-bin", ["./cli"], TRIGGER_MODE_MANUAL)
-local_resource("helm_templates", "./bin/helm-build", ["./charts"], TRIGGER_MODE_MANUAL)
-local_resource("protobuf", "./bin/protoc-go.sh", ["./proto"], TRIGGER_MODE_AUTO)
-local_resource("proxy-identity", "bin/docker-build-proxy", ["./proxy-identity"], TRIGGER_MODE_MANUAL)

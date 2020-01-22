@@ -8,11 +8,11 @@ def linkerd_yaml():
   proxy_version = settings.get("proxy_version")
 
   # build the local CLI
-  local("./bin/build-cli-bin")
+  local("./build-cli-bin")
 
   # run `linkerd install` if the control plane namespace doesn't exist.
   # otherwise, run `linkerd upgrade`.
-  ns_exists = str(local("%s check --wait=1s -o json | jq -r '.categories[] | select(.categoryName==\"linkerd-config\") | .checks[0].result'" % linkerd))
+  ns_exists = str(local("%s check --wait=1s -o json | jq -r '.categories[] | select(.categoryName==\"linkerd-existence\") | .checks[0].result'" % linkerd))
   if ns_exists.lower().strip() == "error":
     return local("%s install --proxy-version=%s %s" % (linkerd, proxy_version , settings.get("linkerd_install_opts")))
   else:

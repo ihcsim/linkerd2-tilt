@@ -1,7 +1,7 @@
 {
-  "allow_k8s_contexts": ["gke_ihcsim_us-west1-a_rejektsna2019"],
-  "default_registry": "gcr.io/ihcsim",
-  "linkerd_bin": "bin/linkerd",
+  "allow_k8s_contexts": [""],
+  "default_registry": "",
+  "linkerd_bin": "/home/isim/workspace/linkerd/linkerd2/bin/linkerd",
   "linkerd_install_opts": "",
-  "proxy_version": "edge-19.10.5"
+  "proxy_version": "edge-20.1.2"
 }
